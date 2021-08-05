@@ -1,6 +1,5 @@
 /** Textual markov chain generator */
 
-
 class MarkovMachine {
 
   /** build markov machine; read in text.*/
@@ -36,20 +35,18 @@ class MarkovMachine {
 
   makeText(numWords = 100) {
     let output = [Object.keys(this.chains)[0]];
-    console.log(output)
 
     for (let i=0; i<numWords; i++) {
       let curr = output[output.length-1];
 
-      console.log(curr);
-      console.log(this.chains[curr])
+      console.log('curr:', curr);
+      console.log('the arr:', this.chains[curr])
 
-      let arr = this.chains[curr]
 
       // arrays.length are not working properly (but it will print to terminal??)
-      console.log(arr, arr.length)
+      console.log('the arr:', this.chains[curr], this.chains[curr].length, 'is array?:', Array.isArray(this.chains[curr]))
 
-      let next = this.chains[curr][Math.floor(Math.random()*(arr.length))]
+      let next = this.chains[curr][Math.floor(Math.random()*(this.chains[curr].length))]
 
       output = output.push(next);
     }
