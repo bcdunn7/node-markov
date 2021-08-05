@@ -16,47 +16,44 @@ class MarkovMachine {
    *  {"the": ["cat", "hat"], "cat": ["in"], "in": ["the"], "hat": [null]} */
 
   makeChains() {
-    let chains = {};
+    let chains = new Map();
+
     for (let i=0; i<this.words.length; i++) {
-      if (Object.keys(chains).includes(this.words[i])) {
-        if (!chains[this.words[i]].includes(this.words[i+1])) {
-          chains[this.words[i]].push(this.words[i+1])
-        }
+      let word = this.words[i];
+      let next = this.words[i+1] || null;
+
+      if (chains.has(word)) {
+        chains.get(word).push(next);
       }
       else {
-        chains[this.words[i]] = [this.words[i+1]];
+        chains.set(word, [next]);
       }
     }
     this.chains = chains;
   }
 
 
+  static random(arr) {
+    return arr[Math.floor(Math.random()*(arr.length))]
+  }
+
   /** return random text from chains */
 
   makeText(numWords = 100) {
-    let output = [Object.keys(this.chains)[0]];
+    let curr = MarkovMachine.random(Array.from(this.chains.keys()));
 
-    for (let i=0; i<numWords; i++) {
-      let curr = output[output.length-1];
+    let output = [];
 
-      console.log('curr:', curr);
-      console.log('the arr:', this.chains[curr])
-
-
-      // arrays.length are not working properly (but it will print to terminal??)
-      console.log('the arr:', this.chains[curr], this.chains[curr].length, 'is array?:', Array.isArray(this.chains[curr]))
-
-      let next = this.chains[curr][Math.floor(Math.random()*(this.chains[curr].length))]
-
-      output = output.push(next);
+    while (output.length < numWords && curr !== null) {
+      output.push(curr);
+      curr = MarkovMachine.random(this.chains.get(curr))
     }
 
-    return output;
+    return output.join(' ');
   }
 }
 
-let mm = new MarkovMachine("I could not, would not, on a boat. I will not, will not, with a goat. I will not eat them in the rain. I will not eat them on a train. Not in the dark! Not in a tree! Not in a car! You let me be! I do not like them in a box. I do not like them with a fox. I will not eat them in a house. I do not like them with a mouse. I do not like them here or there. I do not like them anywhere!");
-// console.log(mm.chains);
 
-let output = mm.makeText();
-console.log(output)
+module.exports = {
+  MarkovMachine: MarkovMachine
+}
